@@ -38,32 +38,48 @@ We are going to run a couple INSERT/UPDATE/DELETE statements and put our SQL STA
 
 3. Delete the user with the id of `114` from the `users` table.
 
-Did the above statment fail? Why? What does the error response say?
+Did the above statement fail? Why? What does the error response say?
+
+It failed since the key you were attempted to delete is a foreign key, which is what establishes the relationship between two tables. If you destroy this entry, you can destroy the relationship between the two tables. 
+
+The error reads: 20:32:04	DELETE FROM users WHERE id = '114'	Error Code: 1451. Cannot delete or update a parent row: a foreign key constraint fails (`Admin`.`usersAddress`, CONSTRAINT `usersAddress_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`))	0.046 sec
+
+In other words, the Id in user is the refer primary key used in userAddress.
+
 
 We cannot delete this user yet because other tables (usersContact, usersAddress) are children of this table. Remember when we talked about foreign keys in the last lesson? That means we need to delete the appropriate information from those tables before we can delete the user. 
 
 This should make sense because we can't have user addresses that don't correspond to any user (since the user would have been deleted).
 
-Let's delete the appropriate information from `usersContact`, `usersAddress` and finally `users` all corresponding to the user id of 114. Put all three DELETE statments below.
+Let's delete the appropriate information from `usersContact`, `usersAddress` and finally `users` all corresponding to the user id of 114. Put all three DELETE statements below.
 
 
 ## SQL Statements
 
 1. INSERT two users:
 
+INSERT INTO users (first_name, last_name) VALUES ('test', 'users'), ('test2', 'users');
+SELECT * FROM users WHERE first_name LIKE 'tes%'
 
 2. UPDATE all Ohio addresses to "REDACTED":
+
+UPDATE usersAddress SET state = 'REDACTED' WHERE state = 'OH';
+SELECT COUNT(*) FROM usersAddress WHERE state = 'REDACTED';
 
 3. All three DELETES
 
 * DELETE from usersContact
 
+DELETE FROM usersContact WHERE user_id = '114'; 
 
 * DELETE from usersAddress
 
+DELETE FROM usersAddress WHERE user_id = '114'; 
 
 * DELETE from users
 
+USE Admin;
+DELETE FROM users WHERE id = '114'; 
 
 ## Summary
 
